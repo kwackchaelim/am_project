@@ -229,6 +229,9 @@ img {
 #main_article table td {
 	border: 1px solid #5f5f5f5f;
 }
+#main_article table td:first-child {
+	text-align: center;
+}
 #main_article table th:first-child {
 	width: 35px;
 }

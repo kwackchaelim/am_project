@@ -14,7 +14,7 @@
 <body>
 	<header id="main_header">
 		<div id="title">
-			<img src="Img/logo_1.png" style="float:left">
+			<img src="img/logo_1.png" style="float:left">
 			<a href="main.jsp"><span>인천광역시</span>
 			<span>미추홀도서관</span></a>
 			<span>Incheon Metropolitan City Michuhol Library</span>

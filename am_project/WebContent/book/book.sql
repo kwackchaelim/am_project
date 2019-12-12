@@ -1,7 +1,7 @@
 create table book (
 	bookNumber int not null auto_increment primary key,
-    bookName varchar(100) not null,
-    author varchar(40) not null,
+    bookName varchar(100),
+    author varchar(40),
     publishingHouse varchar(40),
 	category varchar(25),
     symbol varchar(40),

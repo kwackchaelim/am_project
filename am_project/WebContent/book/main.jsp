@@ -14,7 +14,7 @@
 <body>
 	<header id="main_header">
     	<div id="title">
-      	  	<img src="Img/logo_1.png" style="float:left">
+      	  	<img src="img/logo_1.png" style="float:left">
 			<span>인천광역시</span>
             <span>미추홀도서관</span>
 			<span>Incheon Metropolitan City Michuhol Library</span>
@@ -52,7 +52,7 @@
     <div id="content">
     	<section id="main_section">
        		<article id="serch">
-				<img src="Img/library1.jpg">
+				<img src="img/library1.jpg">
                 <form name="form1" method="post" action="BooksController">
                 	<input type="hidden" name="action" value="list">
 					<input type="hidden" name="bookNumber" value=0>
@@ -63,13 +63,13 @@
         	<article class="main_article">
             	<ul>
 					<li class="article_title">추천 도서</li>
-					<img src="Img/book1.jpg">
+					<img src="img/book1.jpg">
 					<li class="book_title">도로시 죽이기</li>
 					<li class="book_sub">고바야시 야스미<br>검은숲</li>				
 					
 				</ul>
                 <ul>
-                  	<img src="Img/book2.jpg">
+                  	<img src="img/book2.jpg">
                   	<li class="book_title">소년이 온다</li>
 					<li class="book_sub">한강<br>창비</li>		
 				</ul>
@@ -80,12 +80,12 @@
             <article class="main_article">
 				<ul>
 					<li class="article_title">어린이 영화 상영</li>
-					<img src="Img/movie1.jpg">
+					<img src="img/movie1.jpg">
 					<li class="book_title">위 베어 베어스<br>:베이비 베어스</li>
 					<li class="book_sub">71분 상영</li>				
 				</ul>
                 <ul>
-					<img src="Img/movie2.jpg">
+					<img src="img/movie2.jpg">
 					<li class="book_title">보스 베이비</li>
 					<li class="book_sub">97분 상영</li>				
 				</ul>
@@ -96,7 +96,7 @@
             <article class="main_article">
             	<ul>
 					<li class="article_title">이 달의 행사</li>
-					<img src="Img/event1.jpg">
+					<img src="img/event1.jpg">
 					<li class="book_title">테마인문고전특강</li>
 				</ul>
                 <ul>

@@ -179,20 +179,20 @@ public class BookDAO {
 	 *							[2019-10-30; 신예성]
 	 */
 	
-public BookDTO getDB(int id) {
+public BookDTO getDB(int bookNumber) {
 		
 		connect();
 		
 		BookDTO bookDTO = new BookDTO();
 		
-		String sql = "select * from AccountTransfer where id = ?";
+		String sql = "select * from book where bookNumber = ?";
 		
 		try {
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			// SQL문에 조회조건 입력
-			pstmt.setInt(1,id);
+			pstmt.setInt(1,bookNumber);
 
 			//SQL문 실행
 			ResultSet rs = pstmt.executeQuery();
@@ -201,7 +201,7 @@ public BookDTO getDB(int id) {
 			rs.next();
 			
 			// DB Select결과를 DO 객체에 저장
-			bookDTO.setBookNumber(rs.getInt("booknumber"));
+			bookDTO.setBookNumber(rs.getInt("bookNumber"));
 			bookDTO.setBookName(rs.getString("bookName"));
 			bookDTO.setAuthor(rs.getString("author"));
 			bookDTO.setPublishingHouse(rs.getString("publishingHouse"));
@@ -237,85 +237,27 @@ public BookDTO getDB(int id) {
  */
 
 	
-public boolean updateDB(BookDTO bookDTO) {
-	
-	// update 이전 수량
-	int transferAmmount = getTransferAmmount(bookDTO.getId());
+public boolean updateDB(int bookNumber, BookDTO bookDTO) {
 	
 	connect();
 	
-	
+// id로 매칭하여 update				
+		String sql ="update book set bookName=?, author=?, publishingHouse=?, category=?, symbol=?, status=? where bookNumber=?";
+
 	try {
-		
-		// 트랜젝션 Non Autocommit시작
-		conn.setAutoCommit(false);
-
-		// id로 매칭하여 update				
-		String sql1 ="update AccountTransfer set transferDate=?, transferAmmount=? where id=?";
-
-		pstmt = conn.prepareStatement(sql1);
+		pstmt = conn.prepareStatement(sql);
 
 		// SQL문에 변수 입력
 		pstmt.setString(1,bookDTO.getBookName());
-		pstmt.setString(2,bookDTO.getAuthor());
-		pstmt.setString(3,bookDTO.getPublishingHouse());
-		pstmt.setString(4,bookDTO.getCategory());
-		pstmt.setString(5,bookDTO.getSymbol());
-		pstmt.setString(6,bookDTO.getStatus());
+		pstmt.setString(2, bookDTO.getAuthor());
+		pstmt.setString(3, bookDTO.getPublishingHouse());
+		pstmt.setString(4, bookDTO.getCategory());
+		pstmt.setString(5, bookDTO.getSymbol());
+		pstmt.setString(6, bookDTO.getStatus());
+		pstmt.setInt(7, bookNumber);
 		
-		//SQL문 실행, 실패 시 roollback
-		if(pstmt.executeUpdate() < 1) {
-		
-			conn.rollback();
-			System.out.println("update 시 DB update1 오류로 Rollback");
-		}
-		
-		// from account update(변경 후 수량 -, 변경 전 수량 +)
-		String sql2 ="update Account set accountBalance = (accountBalance - ?) + ? where  accountNumber=?";
-		
-		pstmt = conn.prepareStatement(sql2);
-
-		// SQL문에 변수 입력
-		pstmt.setString(1,bookDTO.getBookName());
-		pstmt.setString(2,bookDTO.getAuthor());
-		pstmt.setString(3,bookDTO.getPublishingHouse());
-		pstmt.setString(4,bookDTO.getCategory());
-		pstmt.setString(5,bookDTO.getSymbol());
-		pstmt.setString(6,bookDTO.getStatus());
-
-		//SQL문 실행, 실패 시 roollback
-		if(pstmt.executeUpdate() < 1) {
-		
-			conn.rollback();
-			System.out.println("update 시 DB update2 오류로 Rollback");
-		}
-
-
-		// to account update(변경 후 수량 +, 변경 전 수량 -)
-		String sql3 ="update Account set accountBalance = (accountBalance + ?) - ? where  accountNumber=?";
-		
-		pstmt = conn.prepareStatement(sql3);
-
-		// SQL문에 변수 입력
-		pstmt.setString(1,bookDTO.getBookName());
-		pstmt.setString(2,bookDTO.getAuthor());
-		pstmt.setString(3,bookDTO.getPublishingHouse());
-		pstmt.setString(4,bookDTO.getCategory());
-		pstmt.setString(5,bookDTO.getSymbol());
-		pstmt.setString(6,bookDTO.getStatus());
-
-		
-		//SQL문 실행, 정상 시 commit, 실패 시 rollback
-		if(pstmt.executeUpdate() > 0) {
-			conn.commit();
-		} else {
-			conn.rollback();
-			System.out.println("update 시 DB update2 오류로 Rollback");
-		}
-		
-		// 트랜젝션 Non Auto 종료
-		conn.setAutoCommit(true);
-		
+		pstmt.executeUpdate();
+	
 	} catch (SQLException e) {
 		e.printStackTrace();
 		return false;
@@ -342,7 +284,7 @@ public boolean updateDB(BookDTO bookDTO) {
  *							[2019-10-30; 신예성]
  */
 
-public boolean deleteDB(BookDTO bookDTO) {
+public boolean deleteDB(int bookNumber) {
 	
 	
 	connect();
@@ -353,12 +295,12 @@ public boolean deleteDB(BookDTO bookDTO) {
 		conn.setAutoCommit(false);
 		
 		// id로 매칭하여 delete				
-		String sql1 ="delete from AccountTransfer where id=?";
+		String sql1 ="delete from book where bookNumber=?";
 		
 		pstmt = conn.prepareStatement(sql1);
 
 		// SQL문에 변수 입력
-		pstmt.setInt(1,bookDTO.getId());
+		pstmt.setInt(1,bookNumber);
 					
 		//SQL문 실행, 실패 시 roollback
 		if(pstmt.executeUpdate() < 1) {
@@ -367,47 +309,6 @@ public boolean deleteDB(BookDTO bookDTO) {
 			System.out.println("delete 시 DB delete 오류로 Rollback");
 		}
 		
-		// from account update(수량 +)
-		String sql2 ="update Account set accountBalance = accountBalance + ? where  accountNumber=?";
-		
-		pstmt = conn.prepareStatement(sql2);
-
-		// SQL문에 변수 입력
-		pstmt.setString(1,bookDTO.getBookName());
-		pstmt.setString(2,bookDTO.getAuthor());
-		pstmt.setString(3,bookDTO.getPublishingHouse());
-		pstmt.setString(4,bookDTO.getCategory());
-		pstmt.setString(5,bookDTO.getSymbol());
-		pstmt.setString(6,bookDTO.getStatus());
-
-		//SQL문 실행, 실패 시 roollback
-		if(pstmt.executeUpdate() < 1) {
-		
-			conn.rollback();
-			System.out.println("update 시 DB update2 오류로 Rollback");
-		}
-
-
-		// to account update(수량 -)
-		String sql3 ="update Account set accountBalance = accountBalance - ? where  accountNumber=?";
-		
-		pstmt = conn.prepareStatement(sql3);
-
-		// SQL문에 변수 입력
-		pstmt.setString(1,bookDTO.getBookName());
-		pstmt.setString(2,bookDTO.getAuthor());
-		pstmt.setString(3,bookDTO.getPublishingHouse());
-		pstmt.setString(4,bookDTO.getCategory());
-		pstmt.setString(5,bookDTO.getSymbol());
-		pstmt.setString(6,bookDTO.getStatus());
-
-		//SQL문 실행, 정상 시 commit, 실패 시 rollback
-		if(pstmt.executeUpdate() > 0) {
-			conn.commit();
-		} else {
-			conn.rollback();
-			System.out.println("delete 시 DB update2 오류로 Rollback");
-		}
 		
 		// 트랜젝션 Non Auto 종료
 		conn.setAutoCommit(true);

@@ -41,7 +41,7 @@ public class BookController extends HttpServlet {
 
 			BookDTO bookDTO = new BookDTO();
 
-			if((action.equals("insert"))) {
+			if((action.equals("insert")) || (action.equals("update")) || (action.equals("delete")) ){
 
 				bookDTO.setBookName(request.getParameter("bookName"));
 				bookDTO.setAuthor(request.getParameter("author"));
@@ -91,11 +91,23 @@ public class BookController extends HttpServlet {
 
 				pageContext.forward("book_list.jsp");
 
-			} else if(action.equals("update")) {
-
+			} else if(action.equals("edit")) {
+	            
+	            // edit용 1건을 select
+				bookDTO = bookDAO.getDB(Integer.parseInt((String)request.getParameter("bookNumber")));
+	            
+	            // edit를 setAttribute
+	            request.setAttribute("action", action);
+	            
+	            request.setAttribute("bookDTO", bookDTO);
+	            
+	            pageContext.forward("book_view.jsp");
+	            
+	            
+	         } else if(action.equals("update")) {
 				// 수정
-				if(bookDAO.updateDB(bookDTO)) {
-
+				if(bookDAO.updateDB(Integer.parseInt((String)request.getParameter("bookNumber")),bookDTO)) {
+						
 					// 조회결과
 					List<BookDTO> bookList = bookDAO.getDBList(bookDTO.getSearchBookName());
 					
@@ -111,10 +123,10 @@ public class BookController extends HttpServlet {
 			} else if(action.equals("delete")) {
 
 				// 삭제
-				if(bookDAO.deleteDB(bookDTO)) {
+				if(bookDAO.deleteDB(Integer.parseInt((String)request.getParameter("bookNumber")))) {
 
 					// 조회결과
-					List<BookDTO> bookList = bookDAO.getDBList(bookDAO.getSearchBookName());
+					List<BookDTO> bookList = bookDAO.getDBList(bookDTO.getSearchBookName());
 					
 					// List를 setAttribute
 					request.setAttribute("bookList", bookList);
@@ -126,7 +138,7 @@ public class BookController extends HttpServlet {
 				}
 				
 			} else {
-				out.println("<script>alert('action �뙆�씪誘명꽣 �솗�씤')</script>");
+				out.println("<script>alert('action')</script>");
 			}
 			
 		} catch (Exception e) {
